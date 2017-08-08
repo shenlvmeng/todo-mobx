@@ -1,27 +1,33 @@
-import React from 'react';
-import { render } from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
-import AppState from './AppState';
-import App from './App';
+import React from 'react'
+import { render } from 'react-dom'
 
-const appState = new AppState();
+import TodoList from './stores/TodoList'
+import Filter from './stores/Filter'
+import App from './components/App';
+
+const todos = JSON.parse(localStorage.getItem('todo-mobx', 'todos'))
+
+let todoStore = TodoList.fromJS(todos || [])
+let filterStore = new Filter()
 
 render(
-  <AppContainer>
-    <App appState={appState} />
-  </AppContainer>,
+  <App 
+    todoStore={todoStore} 
+    filterStore={filterStore}
+  />,
   document.getElementById('root')
-);
+)
 
 if (module.hot) {
-  module.hot.accept('./App', () => {
-    const NextApp = require('./App').default;
+  module.hot.accept('./components/App', () => {
+    const NextApp = require('./components/App').default;
 
     render(
-      <AppContainer>
-        <NextApp appState={appState} />
-      </AppContainer>,
+      <NextApp 
+        todoStore={todoStore} 
+        filterStore={filterStore}
+      />,
       document.getElementById('root')
-    );
-  });
+    )
+  })
 }
